@@ -1,0 +1,10 @@
+<h1>Detalles del Evento</h1>
+
+<p><strong>Título:</strong> <%= @evento.titulo %></p>
+<p><strong>Descripción:</strong> <%= @evento.descripcion %></p>
+<p><strong>Fecha:</strong> <%= @evento.fecha.strftime('%d/%m/%Y %H:%M') %></p>
+<p><strong>Usuario Asignado:</strong> <%= @evento.usuario.nombre if @evento.usuario %></p>
+
+<%= link_to 'Editar', edit_evento_path(@evento), class: 'btn btn-warning' %>
+<%= link_to 'Eliminar', @evento, method: :delete, data: { confirm: '¿Estás seguro?' }, class: 'btn btn-danger' %>
+<%= link_to 'Volver a la Lista', eventos_path, class: 'btn btn-secondary' %>

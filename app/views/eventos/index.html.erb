@@ -1,0 +1,29 @@
+<h1>Eventos</h1>
+<%= link_to 'Nuevo Evento', new_evento_path %>
+
+<table>
+  <thead>
+    <tr>
+      <th>Título</th>
+      <th>Descripción</th>
+      <th>Fecha</th>
+      <th>Usuario</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @eventos.each do |evento| %>
+      <tr>
+        <td><%= evento.titulo %></td>
+        <td><%= evento.descripcion %></td>
+        <td><%= evento.fecha %></td>
+        <td><%= evento.usuario.nombre if evento.usuario %></td>
+        <td>
+          <%= link_to 'Ver', evento %>
+          <%= link_to 'Editar', edit_evento_path(evento) %>
+          <%= link_to 'Eliminar', evento, method: :delete, data: { confirm: '¿Estás seguro?' } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
