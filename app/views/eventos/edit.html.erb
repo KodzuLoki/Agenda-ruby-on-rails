@@ -27,6 +27,11 @@
     <%= form.datetime_select :fecha, class: 'form-control' %>
   </div>
 
+  <div class="field">
+    <%= form.label :ciudad %>
+    <%= form.text_field :ciudad %>
+  </div>
+
   <div class="form-group">
     <%= form.label :usuario_id, "Asignar a Usuario" %>
     <%= form.collection_select :usuario_id, Usuario.all, :id, :nombre, prompt: 'Selecciona un usuario', class: 'form-control' %>

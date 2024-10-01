@@ -1,29 +1,40 @@
-<h1>Eventos</h1>
-<%= link_to 'Nuevo Evento', new_evento_path %>
+<h1 class="text-center my-4">Listado de Eventos</h1>
 
-<table>
-  <thead>
+<!-- Botón para crear un nuevo evento -->
+<div class="text-end mb-4">
+  <%= link_to 'Nuevo Evento', new_evento_path, class: 'btn btn-primary' %>
+</div>
+
+<!-- Tabla de eventos -->
+<table class="table table-bordered table-hover table-striped">
+  <thead class="table-dark">
     <tr>
-      <th>Título</th>
-      <th>Descripción</th>
-      <th>Fecha</th>
-      <th>Usuario</th>
-      <th>Acciones</th>
+      <th scope="col">Título</th>
+      <th scope="col">Descripción</th>
+      <th scope="col">Fecha</th>
+      <th scope="col">Usuario</th>
+      <th scope="col" class="text-center">Acciones</th>
     </tr>
   </thead>
   <tbody>
     <% @eventos.each do |evento| %>
       <tr>
         <td><%= evento.titulo %></td>
-        <td><%= evento.descripcion %></td>
-        <td><%= evento.fecha %></td>
+        <td><%= truncate(evento.descripcion, length: 50) %></td>
+        <td><%= l(evento.fecha, format: :long) %></td>
         <td><%= evento.usuario.nombre if evento.usuario %></td>
-        <td>
-          <%= link_to 'Ver', evento %>
-          <%= link_to 'Editar', edit_evento_path(evento) %>
-          <%= link_to 'Eliminar', evento, method: :delete, data: { confirm: '¿Estás seguro?' } %>
+        <td class="text-center">
+          <!-- Acciones: Ver, Editar, Eliminar -->
+          <%= link_to 'Ver', evento, class: 'btn btn-info btn-sm mx-1' %>
+          <%= link_to 'Editar', edit_evento_path(evento), class: 'btn btn-warning btn-sm mx-1' %>
+          <%= link_to 'Eliminar', evento, method: :delete, data: { confirm: '¿Estás seguro?' }, class: 'btn btn-danger btn-sm mx-1' %>
         </td>
       </tr>
     <% end %>
   </tbody>
 </table>
+
+<!-- Mensaje si no hay eventos disponibles -->
+<% if @eventos.empty? %>
+  <p class="text-center text-muted">No hay eventos disponibles actualmente.</p>
+<% end %>

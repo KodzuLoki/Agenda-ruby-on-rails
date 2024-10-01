@@ -1,8 +1,9 @@
-<h1>Nuevo Evento</h1>
+<h1 class="text-center">Nuevo Evento</h1>
 
 <%= form_with(model: @evento, local: true) do |form| %>
+  <!-- Sección de errores, si hay -->
   <% if @evento.errors.any? %>
-    <div id="error_explanation">
+    <div id="error_explanation" class="alert alert-danger">
       <h2><%= pluralize(@evento.errors.count, "error") %> encontrados:</h2>
       <ul>
         <% @evento.errors.full_messages.each do |message| %>
@@ -12,26 +13,39 @@
     </div>
   <% end %>
 
+  <!-- Campo: Título -->
   <div class="form-group">
-    <%= form.label :titulo %>
-    <%= form.text_field :titulo, class: 'form-control' %>
+    <%= form.label :titulo, 'Título del Evento', class: 'form-label' %>
+    <%= form.text_field :titulo, class: 'form-control', placeholder: 'Título del evento (ej. Reunión con cliente)' %>
   </div>
 
+  <!-- Campo: Descripción -->
   <div class="form-group">
-    <%= form.label :descripcion %>
-    <%= form.text_area :descripcion, class: 'form-control' %>
+    <%= form.label :descripcion, 'Descripción', class: 'form-label' %>
+    <%= form.text_area :descripcion, class: 'form-control', placeholder: 'Detalles adicionales del evento...' %>
   </div>
 
+  <!-- Campo: Fecha y hora -->
   <div class="form-group">
-    <%= form.label :fecha %>
+    <%= form.label :fecha, 'Fecha y Hora del Evento', class: 'form-label' %>
     <%= form.datetime_select :fecha, class: 'form-control' %>
   </div>
 
+  <!-- Campo: Ciudad -->
   <div class="form-group">
-    <%= form.label :usuario_id, "Asignar a Usuario" %>
+    <%= form.label :ciudad, 'Ciudad del Evento', class: 'form-label' %>
+    <%= form.text_field :ciudad, class: 'form-control', placeholder: 'Ingresa la ciudad (ej. Santiago)' %>
+  </div>
+
+  <!-- Campo: Asignar a Usuario -->
+  <div class="form-group">
+    <%= form.label :usuario_id, "Asignar a Usuario", class: 'form-label' %>
     <%= form.collection_select :usuario_id, Usuario.all, :id, :nombre, prompt: 'Selecciona un usuario', class: 'form-control' %>
   </div>
 
-  <%= form.submit 'Crear Evento', class: 'btn btn-success' %>
-  <%= link_to 'Cancelar', eventos_path, class: 'btn btn-secondary' %>
+  <!-- Botones de acción -->
+  <div class="form-group mt-4">
+    <%= form.submit 'Crear Evento', class: 'btn btn-success' %>
+    <%= link_to 'Cancelar', eventos_path, class: 'btn btn-secondary' %>
+  </div>
 <% end %>
