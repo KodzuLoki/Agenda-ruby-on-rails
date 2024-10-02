@@ -14,6 +14,19 @@ class EventosController < ApplicationController
     @eventos = @usuario.eventos.order(:fecha)
   end
 
+  def por_usuario
+    # Encuentra al usuario por su ID
+    @usuario = Usuario.find(params[:id])
+
+    # Obtén todos los eventos del usuario
+    @eventos = @usuario.eventos
+
+    # Renderiza la vista correspondiente
+    respond_to do |format|
+      format.html # por_usuario.html.erb
+    end
+  end
+
   # Verificar si un usuario está ocupado en una fecha/hora
   def verificar_disponibilidad
     ocupado = Evento.usuario_ocupado?(params[:usuario_id], params[:fecha])
@@ -25,14 +38,16 @@ class EventosController < ApplicationController
     @evento = Evento.new
   end
 
-  # Crear un evento y verificar la disponibilidad antes de guardarlo
+  # Crear un evento y enviar notificación por correo electrónico
   def create
     @evento = Evento.new(evento_params)
     
-    # Verificar disponibilidad antes de crear el evento
     if Evento.usuario_ocupado?(@evento.usuario_id, @evento.fecha)
       redirect_to new_evento_path, alert: 'El usuario ya tiene un evento en la fecha y hora seleccionadas.'
     elsif @evento.save
+      # Enviar notificación por correo al usuario vinculado y al correo del administrador
+      enviar_notificacion_por_correo(@evento)
+
       redirect_to @evento, notice: 'Evento creado exitosamente.'
     else
       render :new, alert: "No se pudo crear el evento: #{@evento.errors.full_messages.join(', ')}"
@@ -49,7 +64,6 @@ class EventosController < ApplicationController
 
   # Actualizar un evento y verificar la disponibilidad antes de guardarlo
   def update
-    # Verificar si el nuevo horario interfiere con otros eventos del usuario
     if Evento.usuario_ocupado?(@evento.usuario_id, @evento.fecha)
       redirect_to edit_evento_path(@evento), alert: 'El usuario ya tiene un evento en la fecha y hora seleccionadas.'
     elsif @evento.update(evento_params)
@@ -62,7 +76,10 @@ class EventosController < ApplicationController
   # Eliminar un evento
   def destroy
     @evento.destroy
-    redirect_to eventos_url, notice: 'Evento eliminado exitosamente.'
+    respond_to do |format|
+      format.html { redirect_to eventos_url, notice: 'El evento fue eliminado con éxito.' }
+      format.json { head :no_content }
+    end
   end
 
   # Acceso a la información en formato JSON
@@ -90,13 +107,9 @@ class EventosController < ApplicationController
 
   # Método para obtener el clima de la ciudad del evento
   def obtener_clima(ciudad)
-    # Asegurar que la ciudad está presente para consultar el clima
     return { error: 'Ciudad no especificada' } if ciudad.blank?
 
-    # Llamar al servicio de OpenWeather para obtener el clima
     clima = OpenWeatherService.consultar_clima(ciudad)
-
-    # Validar que la respuesta del servicio sea exitosa
     if clima.is_a?(Hash) && clima['main'] && clima['weather']
       {
         temperatura: clima['main']['temp'],
@@ -106,5 +119,19 @@ class EventosController < ApplicationController
     else
       { error: clima['error'] || 'No se pudo obtener el clima para la ciudad especificada.' }
     end
+  end
+
+  # Método para enviar la notificación por correo utilizando SendGrid
+  def enviar_notificacion_por_correo(evento)
+    # Definir el correo del administrador
+    correo_admin = 'elioth.bass@gmail.com'
+
+    # Enviar correo al usuario vinculado con el evento
+    if evento.usuario
+      SendgridService.enviar_notificacion(evento, evento.usuario.email)
+    end
+
+    # Enviar correo al administrador
+    SendgridService.enviar_notificacion(evento, correo_admin)
   end
 end
