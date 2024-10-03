@@ -1,0 +1,30 @@
+<!-- app/views/eventos/por_usuario.html.erb -->
+<h1>Eventos de <%= @usuario.nombre %></h1>
+
+<% if @eventos.any? %>
+  <table>
+    <thead>
+      <tr>
+        <th>Título</th>
+        <th>Descripción</th>
+        <th>Fecha</th>
+        <th>Ciudad</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @eventos.each do |evento| %>
+        <tr>
+          <td><%= evento.titulo %></td>
+          <td><%= evento.descripcion %></td>
+          <td><%= evento.fecha.strftime("%d/%m/%Y %H:%M") %></td>
+          <td><%= evento.ciudad %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>No hay eventos para este usuario.</p>
+<% end %>
+
+<%= link_to 'Ver Eventos', eventos_path, class: 'btn btn-secondary' %>
+

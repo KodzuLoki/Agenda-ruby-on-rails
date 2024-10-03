@@ -1,0 +1,42 @@
+<h1>Editar Evento</h1>
+
+<%= form_with(model: @evento, local: true) do |form| %>
+  <% if @evento.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@evento.errors.count, "error") %> encontrados:</h2>
+      <ul>
+        <% @evento.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= form.label :titulo %>
+    <%= form.text_field :titulo, class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :descripcion %>
+    <%= form.text_area :descripcion, class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :fecha %>
+    <%= form.datetime_select :fecha, class: 'form-control' %>
+  </div>
+
+  <div class="field">
+    <%= form.label :ciudad %>
+    <%= form.text_field :ciudad %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :usuario_id, "Asignar a Usuario" %>
+    <%= form.collection_select :usuario_id, Usuario.all, :id, :nombre, prompt: 'Selecciona un usuario', class: 'form-control' %>
+  </div>
+
+  <%= form.submit 'Actualizar Evento', class: 'btn btn-success' %>
+  <%= link_to 'Cancelar', evento_path(@evento), class: 'btn btn-secondary' %>
+<% end %>

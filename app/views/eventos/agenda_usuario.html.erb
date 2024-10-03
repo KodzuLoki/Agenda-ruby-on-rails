@@ -1,0 +1,28 @@
+<h1>Agenda de <%= @usuario.nombre %></h1>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Título</th>
+      <th>Descripción</th>
+      <th>Fecha</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @eventos.each do |evento| %>
+      <tr>
+        <td><%= evento.titulo %></td>
+        <td><%= evento.descripcion %></td>
+        <td><%= evento.fecha.strftime('%d/%m/%Y %H:%M') %></td>
+        <td>
+          <%= link_to 'Ver', evento_path(evento), class: 'btn btn-info' %>
+          <%= link_to 'Editar', edit_evento_path(evento), class: 'btn btn-warning' %>
+          <%= link_to 'Eliminar', evento_path(evento), method: :delete, data: { confirm: '¿Estás seguro?' }, class: 'btn btn-danger' %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to 'Volver a la Lista de Eventos', eventos_path, class: 'btn btn-secondary' %>

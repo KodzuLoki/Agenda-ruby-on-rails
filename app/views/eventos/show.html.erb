@@ -1,0 +1,19 @@
+<h1>Detalles del Evento</h1>
+
+<!-- app/views/eventos/show.html.erb -->
+<p><strong>Título:</strong> <%= @evento.titulo %></p>
+<p><strong>Descripción:</strong> <%= @evento.descripcion %></p>
+<p><strong>Fecha:</strong> <%= @evento.fecha.strftime('%d/%m/%Y %H:%M') %></p>
+<p><strong>Usuario Asignado:</strong> <%= @evento.usuario.nombre if @evento.usuario %></p>
+
+<% if @clima && @clima[:error].blank? %>
+  <h2>Clima para el evento en <%= @evento.ciudad %>:</h2>
+  <p>Temperatura: <%= @clima[:temperatura] %>°C</p>
+  <p>Descripción: <%= @clima[:descripcion] %></p>
+  <img src="https://openweathermap.org/img/w/<%= @clima[:icono] %>.png" alt="Icono del clima">
+<% else %>
+  <p>No se pudo obtener el clima para el evento.</p>
+<% end %>
+
+<%= link_to 'Editar', edit_evento_path(@evento), class: 'btn btn-warning' %>
+<%= link_to 'Volver a la Lista', eventos_path, class: 'btn btn-secondary' %>
